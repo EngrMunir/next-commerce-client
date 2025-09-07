@@ -1,5 +1,6 @@
 "use server";
 
+import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
 
@@ -35,4 +36,19 @@ export const loginUser = async(userData:FieldValues) =>{
     } catch (error:any) {
         return Error(error)
     }
+};
+
+export const getCurrentUser = async()=>{
+    const accessToken = (await cookies()).get('accessToken')?.value;
+    let decodedData = null;
+
+    if(accessToken){
+        decodedData = jwtDecode(accessToken);
+        return decodedData
+    }
+    return null;
 }
+
+export const logout = async() =>{
+   ( await cookies()).delete('accessToken');
+};
