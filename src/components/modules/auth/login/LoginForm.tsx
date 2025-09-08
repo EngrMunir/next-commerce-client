@@ -9,11 +9,16 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { loginSchema } from "./loginValidation";
 import { loginUser } from "@/services/AuthService";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const LoginForm = () => {
     const form = useForm({
         resolver: zodResolver(loginSchema),
-    })
+    });
+
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get('redirectPath');
+    const router = useRouter();
 
     const { formState:{isSubmitting} } = form;
     
@@ -22,6 +27,12 @@ const LoginForm = () => {
             const res = await loginUser(data);
             if(res.success){
                 toast.success(res?.message)
+                if(redirect){
+                    router.push(redirect)
+                }
+                else{
+                    router.push("/profile")
+                }
             }else{
                 toast.error(res?.message)
             }
