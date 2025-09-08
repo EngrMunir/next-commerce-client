@@ -15,10 +15,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { logout } from '@/services/AuthService';
+import { useUser } from '@/context/UserContext';
 
 const Navbar = () => {
+    const { user, setIsLoading } = useUser();
     const handleLogout =()=>{
-        logout()
+        logout();
+        setIsLoading(true)
     }
     return (
         <header className='border-b w-full'>
@@ -38,9 +41,7 @@ const Navbar = () => {
                     <Button variant="outline" className='rounded-full p-0 size-10'>
                         <ShoppingBag/>
                     </Button>
-                   <Link href="/login">
-                         <Button className='rounded-full' variant="outline">Login</Button>
-                   </Link>
+                   { user ?<>
                     <Link href="/create-shop">
                         <Button className='rounded-full' variant="outline">Create Shop</Button>
                     </Link>
@@ -63,6 +64,12 @@ const Navbar = () => {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                     </DropdownMenu>
+                   </>
+                   :(
+                    <Link href="/login">
+                         <Button className='rounded-full'>Login</Button>
+                    </Link>
+                )}
                 </nav>
             </div>
         </header>
