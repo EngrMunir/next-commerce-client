@@ -16,12 +16,22 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { logout } from '@/services/AuthService';
 import { useUser } from '@/context/UserContext';
+import { usePathname, useRouter } from 'next/navigation';
+import { protectedRoutes } from '@/constants';
 
 const Navbar = () => {
     const { user, setIsLoading } = useUser();
+    const pathname = usePathname();
+    const router = useRouter();
+
     const handleLogout =()=>{
         logout();
-        setIsLoading(true)
+        setIsLoading(true);
+
+        if(protectedRoutes.some(route => pathname.match(route))){
+            router.push("/");
+        }
+
     }
     return (
         <header className='border-b w-full'>
