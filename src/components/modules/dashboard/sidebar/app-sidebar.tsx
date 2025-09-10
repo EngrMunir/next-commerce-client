@@ -5,15 +5,13 @@ import { BotIcon, SquareTerminalIcon } from "lucide-react"
 
 import {
   Sidebar,
-  SidebarContent,
-  SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { NavMain } from "./nav-main"
-import { NavUser } from "./nav-user"
+import Link from "next/link"
 
-// This is sample data.
 const data = {
   navMain:[
     {
@@ -47,17 +45,22 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
-      <SidebarRail />
+     <SidebarHeader>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" asChild>
+            <Link href="/">
+              <div className="flex items-center justify-center">
+                Logo
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-1">
+                <h2 className="font-bold text-xl">NextMart</h2>
+              </div>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+     </SidebarHeader>
     </Sidebar>
   )
 }
