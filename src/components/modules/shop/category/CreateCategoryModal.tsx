@@ -10,6 +10,7 @@ import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+
 const CreateCategoryModal = () => {
     
         const [imageFiles, setImageFiles] = useState<File[] | []>([]);
