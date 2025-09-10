@@ -1,22 +1,34 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import NMImageUploader from "@/components/ui/core/NMImageUploader";
+import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { createCategory } from "@/services/Category";
+import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const CreateCategoryModal = () => {
+    
+        const [imageFiles, setImageFiles] = useState<File[] | []>([]);
+        const [imagePreview, setImagePreview] = useState<string[] | []>([]);
       const form = useForm();
       const { formState: {isSubmitting}}= form;
 
       const onSubmit: SubmitHandler<FieldValues> = async(data) =>{
         try {
-            console.log(data)
+            const formData = new FormData();
+            formData.append("data", JSON.stringify(data));
+            formData.append("icon", imageFiles[0] as File);
+
+            const res = await createCategory(formData);
+            if(res?.success){
+                toast.success(res?.message)
+            }else{
+                toast.error(res?.message)
+            }
         } catch (error) {
             console.error(error)
         }
@@ -35,30 +47,53 @@ const CreateCategoryModal = () => {
                     
                 <FormField
                     control={form.control}
-                    name="email"
+                    name="name"
                     render={({field}) => (
                     <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
-                            <Input {...field} value={field.value || ""} />
+                            <Input type="text" {...field} value={field.value || ""} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                     )}
                 />
-                     <FormField
-                    control={form.control}
-                    name="password"
-                    render={({field}) => (
-                    <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                            <Input type="text" {...field} value={field.value || ""} />
-                        </FormControl>
-                       <FormMessage/>
-                    </FormItem>
-                    )}
+                      <div className="flex items-center justify-center mt-5">
+                    
+                        <FormField
+                            control={form.control}
+                            name="description"
+                            render={({field}) =>(
+                                <FormItem>
+                                    <FormLabel>Description</FormLabel>
+                                    <FormControl>
+                                        <Textarea 
+                                        className="h-36 w-72"
+                                        {...field}
+                                        value={field.value || ""}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                    
+                   { imagePreview.length>0 ? (
+                    <ImagePreviewer 
+                    className="mt-8"
+                    setImageFiles={setImageFiles} 
+                    setImagePreview={setImagePreview} 
+                    imagePreview={imagePreview}
+                    />
+                ):(
+               <div className="mt-8">
+                 <NMImageUploader 
+                setImageFiles={setImageFiles} 
+                setImagePreview={setImagePreview} 
+                label="Upload Logo" 
                 />
+               </div>
+                )}
+            </div>
                 <Button  
                 type="submit"
                 className="mt-5 w-full"
