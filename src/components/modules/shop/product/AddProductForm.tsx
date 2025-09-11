@@ -5,6 +5,7 @@ import NMImageUploader from "@/components/ui/core/NMImageUploader";
 import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
@@ -46,8 +47,15 @@ const AddProductForm = () => {
     }
 
     const onSubmit: SubmitHandler<FieldValues> = async(data) =>{
+        const availableColors = data?.availableColors.map( (color: {value:string}) => color.value);
+        const keyFeatures = data?.keyFeatures.map( (feature: {value:string}) => feature.value);
+
+        const specification:{[key:string]:string} = {};
+        data?.specification.forEach((item:{key:string; value:string}) => specification[item.key] = item.value);
+        
+
         try {
-            console.log(data)
+            
         } catch (err:any) {
             console.error(err)
         }
@@ -152,10 +160,10 @@ const AddProductForm = () => {
                     <div className="col-span-4 md:col-span-3">
                         <FormField
                             control={form.control}
-                            name="servicesOffered"
+                            name="availableColors"
                             render={({field}) =>(
                                 <FormItem>
-                                    <FormLabel>Services Offered</FormLabel>
+                                    <FormLabel>Available Colors</FormLabel>
                                     <FormControl>
                                         <Textarea 
                                         className="h-36"
