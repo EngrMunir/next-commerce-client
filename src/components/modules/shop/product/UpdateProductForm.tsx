@@ -22,7 +22,7 @@ import { addProduct } from "@/services/Product";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-const AddProductForm = () => {
+const UpdateProductForm = ({product}:{product: IProduct}) => {
     const [imageFiles, setImageFiles] = useState<File[] | []>([]);
     const [imagePreview, setImagePreview] = useState<string[] | []>([]);
     const [categories, setCategories] = useState<ICategory[]|[]>([])
@@ -31,15 +31,20 @@ const AddProductForm = () => {
 
     const form = useForm({
         defaultValues:{
-            name:"",
-            description:"",
-            price:"",
-            category:"",
-            brand:"",
-            stock:"",
-            weight:"",
-            availableColors:[{value:""}],
-            keyFeatures:[{value:""}],
+            name:product?.name|| "",
+            description:product?.description ||"",
+            price:product?.price || "",
+            category:product?.category?.name || "",
+            brand:product?.brand?.name || "",
+            stock:product?.stock || "",
+            weight: product?.weight ||"",
+            availableColors: product?.availableColors?.map((color) =>({
+                value:color,
+            })) || [{value:""}],
+            specification: Object.entries(product?.specification || {}).map(
+                ([key, value]) => ({key, value})
+            ) || [{key:"", value:""}],
+            keyFeatures: product?.keyFeatures?.map((feature) => ({ value: feature})) || [{value:""}],
         },
     });
     const { formState: {isSubmitting}} = form;
@@ -112,6 +117,9 @@ const AddProductForm = () => {
     }
     return (
          <div className="border-2 border-gray-300 rounded-xl flex-grow max-w-md w-full p-5">
+            <div className="flex items-center space-x-4 mb-5">
+                <h1 className="text-xl font-bold">Update Product Info</h1>
+            </div>
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField
@@ -292,4 +300,4 @@ const AddProductForm = () => {
     );
 };
 
-export default AddProductForm;
+export default UpdateProductForm;
