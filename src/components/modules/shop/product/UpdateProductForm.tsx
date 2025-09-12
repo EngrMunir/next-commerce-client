@@ -18,13 +18,14 @@ import {
 import { ICategory } from "@/types";
 import { getAllCategories } from "@/services/Category";
 import { getAllBrands } from "@/services/Brand";
-import { addProduct } from "@/services/Product";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { IProduct } from "@/types/product";
+import { updateProduct } from "@/services/Product";
 
 const UpdateProductForm = ({product}:{product: IProduct}) => {
     const [imageFiles, setImageFiles] = useState<File[] | []>([]);
-    const [imagePreview, setImagePreview] = useState<string[] | []>([]);
+    const [imagePreview, setImagePreview] = useState<string[] | []>(product?.imageUrls || []);
     const [categories, setCategories] = useState<ICategory[]|[]>([])
     const [brands, setBrands] = useState<ICategory[]|[]>([])
     const router = useRouter();
@@ -104,7 +105,7 @@ const UpdateProductForm = ({product}:{product: IProduct}) => {
         }
 
         try {
-            const res = await addProduct(formData);
+            const res = await updateProduct(formData, product?._id);
             if(res?.success){
                 toast.success(res?.message)
                 router.push("/user/shop/products");
@@ -294,6 +295,9 @@ const UpdateProductForm = ({product}:{product: IProduct}) => {
                         ))
                     }
                 </div>
+                <Button type="submit" className="mt-5 w-full" disabled={isSubmitting}>
+                    {isSubmitting ? "Adding Product....":"Update Product"}
+                </Button>
                </form>
             </Form>
         </div>

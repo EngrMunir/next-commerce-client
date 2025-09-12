@@ -21,7 +21,12 @@ export const getAllProducts = async(page?:string) =>{
 export const getSingleProduct = async(productId:string)=>{
     try {
          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/product/${productId}`
+            `${process.env.NEXT_PUBLIC_BASE_API}/product/${productId}`,
+            {
+                next:{
+                    tags:["PRODUCT"]
+                }
+            }
         );
         const data = await res.json();
         return data;
@@ -45,10 +50,10 @@ export const addProduct = async(productData: FormData):Promise<any>=>{
         return Error(error.message)
     }
 }
-export const updateProduct = async(productData: FormData):Promise<any>=>{
+export const updateProduct = async(productData: FormData, productId:string):Promise<any>=>{
     try {
          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/product`,{
+            `${process.env.NEXT_PUBLIC_BASE_API}/product/${productId}`,{
                 method:"PATCH",
                 body:productData,
                 headers:{
