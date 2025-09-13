@@ -2,8 +2,8 @@
 
 import Category from "@/components/modules/home/category";
 import FeaturedProducts from "@/components/modules/home/FeaturedProducts";
+import FlashSale from "@/components/modules/home/FlashSale";
 import HeroSection from "@/components/modules/home/hero/HeroSection";
-import { useUser } from "@/context/UserContext";
 
 const HomePage = () => {
     return (
@@ -11,6 +11,7 @@ const HomePage = () => {
             <HeroSection/>
             <Category/>
             <FeaturedProducts/>
+            <FlashSale/>
         </div>
     );
 };
