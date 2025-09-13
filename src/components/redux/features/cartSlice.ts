@@ -2,8 +2,12 @@ import { IProduct } from "@/types/product";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
+export interface CartProduct extends IProduct {
+    orderQuantity: number;
+}
+
 interface InitialState {
-    products: IProduct[];
+    products: CartProduct[];
 };
 
 const initialState: InitialState = {
@@ -19,7 +23,8 @@ const cartSlice = createSlice({
                 (product) => product._id === action.payload._id
             );
             if(productToAdd){
-                productToAdd.orderQuantity +=1
+                productToAdd.orderQuantity +=1;
+                return;
             }
             state.products.push({...action.payload, orderQuantity:1});
         }
