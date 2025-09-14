@@ -1,13 +1,16 @@
+import { subTotalSelector } from "@/components/redux/features/cartSlice";
+import { useAppSelector } from "@/components/redux/hooks";
 import { Button } from "@/components/ui/button";
 
 const PaymentDetails = () => {
+    const subTotal = useAppSelector(subTotalSelector);
     return (
         <div className="border-2 border-white bg-background brightness-105 rounded-md col-span-7">
             <h1 className="text-2xl font-bold">Payment Details</h1>
             <div className="space-y-2 mt-4">
                 <div className="flex justify-between">
                     <p className="text-gray-500">Subtotal</p>
-                    <p className="font-semibold">00</p>
+                    <p className="font-semibold">{subTotal}</p>
                 </div>
                 <div className="flex justify-between">
                     <p className="text-gray-500">Discount</p>
