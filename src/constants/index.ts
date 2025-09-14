@@ -6,3 +6,8 @@ export const protectedRoutes=[
         "/user",
         "/user/:page",
     ];
+
+    export const cities =[
+        "Dhaka",
+        "Bogra"
+    ]
