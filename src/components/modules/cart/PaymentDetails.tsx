@@ -1,5 +1,5 @@
-import { citySelector, grandTotalSelector, orderProductsSelector, orderSelector, shippingAddressSelector, shippingCostSelector, subTotalSelector } from "@/components/redux/features/cartSlice";
-import { useAppSelector } from "@/components/redux/hooks";
+import { citySelector, clearCart, grandTotalSelector, orderProductsSelector, orderSelector, shippingAddressSelector, shippingCostSelector, subTotalSelector } from "@/components/redux/features/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/components/redux/hooks";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/UserContext";
 import { currencyFormatter } from "@/lib/currencyFormatter";
@@ -17,6 +17,7 @@ const PaymentDetails = () => {
     const cartProducts = useAppSelector(orderProductsSelector);
     const user = useUser();
     const router = useRouter();
+    const dispatch = useAppDispatch();
 
     const handleOrder =async()=>{
 
@@ -37,8 +38,15 @@ const PaymentDetails = () => {
                 throw new Error("Cart is empty, what are you trying to order??")
             }
             const res = await createOrder(order);
-            
-            toast.success("Order created successfully",{ id: orderLoading})
+
+            if(res.success){
+                toast.success("Order created successfully",{ id: orderLoading});
+                dispatch(clearCart);
+                router.push(res.data.paymentUrl)
+            }
+            if(!res.success){
+                toast.error(res.message, { id: orderLoading});
+            }
         } catch (error:any) {
             toast.error(error.message, {id: orderLoading});
         }
