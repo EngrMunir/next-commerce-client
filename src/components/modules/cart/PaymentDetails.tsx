@@ -1,16 +1,47 @@
-import { grandTotalSelector, orderSelector, shippingCostSelector, subTotalSelector } from "@/components/redux/features/cartSlice";
+import { citySelector, grandTotalSelector, orderProductsSelector, orderSelector, shippingAddressSelector, shippingCostSelector, subTotalSelector } from "@/components/redux/features/cartSlice";
 import { useAppSelector } from "@/components/redux/hooks";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/context/UserContext";
 import { currencyFormatter } from "@/lib/currencyFormatter";
+import { createOrder } from "@/services/Cart";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const PaymentDetails = () => {
     const subTotal = useAppSelector(subTotalSelector);
     const shippingCost = useAppSelector(shippingCostSelector);
     const grandTotal = useAppSelector(grandTotalSelector)
     const order = useAppSelector(orderSelector);
+    const city = useAppSelector(citySelector);
+    const shippingAddress = useAppSelector(shippingAddressSelector);
+    const cartProducts = useAppSelector(orderProductsSelector);
+    const user = useUser();
+    const router = useRouter();
 
-    const handleOrder =()=>{
-        console.log(order)
+    const handleOrder =async()=>{
+
+        const orderLoading = toast.loading("Order is being placed");
+        try {
+            if(!user.user){
+                toast.warning("Please login first", { id: orderLoading});
+                router.push("/login");
+                throw new Error("Please login first")
+            }
+            if(!city){
+                throw new Error("City is missing")
+            }
+            if(!shippingAddress){
+                throw new Error("Shipping address is missing")
+            }
+            if(cartProducts.length === 0){
+                throw new Error("Cart is empty, what are you trying to order??")
+            }
+            const res = await createOrder(order);
+            
+            toast.success("Order created successfully",{ id: orderLoading})
+        } catch (error:any) {
+            toast.error(error.message, {id: orderLoading});
+        }
     }
 
     return (
